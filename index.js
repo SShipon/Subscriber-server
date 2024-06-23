@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 5000;
 
-// Middleware
+// Middleware add now
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 const mongoURI = 'mongodb+srv://Subscriber-server:EB5VxyrCjLHO52Dy@cluster0.u675lb8.mongodb.net/subscriber-server?retryWrites=true&w=majority&appName=Cluster0'; // Change this to your MongoDB URI
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+//database connect 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -67,7 +68,7 @@ app.get('/subscriber', async (req, res) => {
 });
 
 
-// Start the server
+// Start the server port 5000
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
