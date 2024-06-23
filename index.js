@@ -25,16 +25,14 @@ db.once('open', () => {
 // Define a schema and model for subscribers
 const subscriberSchema = new mongoose.Schema({
     name: String,
-    email: String, // Add email field
+    email: { type: String, unique: true, required: true }, // Add email field with unique constraint
     created_at: { type: Date, default: Date.now }
 });
-
-console.log(subscriberSchema)
 
 const Subscriber = mongoose.model('Subscriber', subscriberSchema);
 
 app.get('/', (req, res) => {
-    res.send('<h4  style="color:#6A0987 ;text-align:center; margin:15% auto; font-size:48px; font-weight: 900;">My University Final Projects server Running</h4>')
+    res.send('<h4  style="color:#6A0987 ;text-align:center; margin:15% auto; font-size:48px; font-weight: 900;">✔️ My University Final Projects server Running 🙂</h4>')
   })
 
 // CORS middleware to allow requests from all origins
@@ -49,11 +47,16 @@ app.post('/subscribe', async (req, res) => {
     const { name, email } = req.body;
 
     try {
-        const newSubscriber = new Subscriber({ name, email }); // Include email and password
+        const newSubscriber = new Subscriber({ name, email });
         await newSubscriber.save();
         res.json({ status: 'success' });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: 'Subscription failed: ' + err.message });
+        if (err.code === 11000) {
+            // Handle duplicate email error
+            res.status(400).json({ status: 'error', message: 'Email already exists' });
+        } else {
+            res.status(500).json({ status: 'error', message: 'Subscription failed: ' + err.message });
+        }
     }
 });
 
@@ -66,7 +69,6 @@ app.get('/subscriber', async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Failed to fetch subscribers: ' + err.message });
     }
 });
-
 
 // Start the server port 5000
 app.listen(port, () => {
