@@ -25,7 +25,6 @@ db.once('open', () => {
 const subscriberSchema = new mongoose.Schema({
     name: String,
     email: String, // Add email field
-    password: String, // Add password field
     created_at: { type: Date, default: Date.now }
 });
 
@@ -42,10 +41,10 @@ app.use((req, res, next) => {
 
 // Route to handle form submission
 app.post('/subscribe', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email } = req.body;
 
     try {
-        const newSubscriber = new Subscriber({ name, email, password }); // Include email and password
+        const newSubscriber = new Subscriber({ name, email }); // Include email and password
         await newSubscriber.save();
         res.json({ status: 'success' });
     } catch (err) {
